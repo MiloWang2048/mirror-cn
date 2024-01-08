@@ -1,0 +1,6 @@
+namespace: library
+repoName: node
+commands:
+  - npm config set registry https://registry.npmmirror.com
+tags:
+  - 18-alpine
