@@ -8,6 +8,10 @@
     "build": "node src/build.js"
   },
   "keywords": [],
+  "engines": {
+    "node": ">=18",
+    "pnpm": "^8.14.0"
+  },
   "author": "milowang",
   "license": "MIT",
   "dependencies": {
