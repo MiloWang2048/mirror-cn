@@ -2,6 +2,7 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { logger } from "./utils.js";
 
 function buildDockerfile(repoName, tag, commands) {
   return `
@@ -21,15 +22,15 @@ export function buildImages(target) {
     fs.writeFileSync(tmpFilePath, dockerfile);
     const buildCommand = `docker build -t mirrorcn/${target.repoName}:${tag} -q .`;
     try {
-      console.log(`Building ${target.repoName}:${tag}...`);
+      logger.info(`Building ${target.repoName}:${tag}...`);
       execSync(buildCommand, {
         windowsHide: true,
         cwd: buildPath,
         stdio: "ignore",
       });
-      console.log("Success.");
+      logger.info("Success.");
     } catch (error) {
-      console.log(`Error when building ${target.repoName}:${tag}. Abort.`);
+      logger.error(`Error when building ${target.repoName}:${tag}. Abort.`);
       process.exit(-1);
     }
   });

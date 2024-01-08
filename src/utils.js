@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { targetSchema } from "./target-schema.js";
+import { getLogger } from "log4js";
 
 export const targetDirPath = fileURLToPath(import.meta.resolve("../target"));
 export const targetPaths = fs
@@ -17,3 +18,6 @@ export function readTargets() {
     return target;
   });
 }
+
+export const logger = getLogger();
+logger.level = "INFO";

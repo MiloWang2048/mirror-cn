@@ -1,5 +1,6 @@
 import { readTargets } from "./utils.js";
 import { execSync } from "node:child_process";
+import { logger } from "./utils.js";
 
 readTargets().forEach((target) => {
   try {
@@ -8,7 +9,7 @@ readTargets().forEach((target) => {
       stdio: "ignore",
     });
   } catch (err) {
-    console.log(`Error when pushing repo ${repoName}. Abort.`);
+    logger.error(`Error when pushing repo ${repoName}. Abort.`);
     process.exit(-1);
   }
 });
