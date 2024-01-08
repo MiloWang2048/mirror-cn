@@ -13,6 +13,13 @@ try {
   process.exit(-1);
 }
 
+try {
+  execSync("docker system prune -a --force", { windowsHide: true, stdio: "ignore" });
+} catch (err) {
+  console.log("Error when pruning image cache. Abort.");
+  process.exit(-1);
+}
+
 const targetDirPath = fileURLToPath(import.meta.resolve("../target"));
 const targetPaths = fs
   .readdirSync(targetDirPath)
