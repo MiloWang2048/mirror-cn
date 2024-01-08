@@ -4,7 +4,9 @@
   "type": "module",
   "description": "提供一系列已更换为国内镜像源的基础 Docker 镜像",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "node src/build.js"
+  },
   "keywords": [],
   "author": "milowang",
   "license": "MIT",
