@@ -20,8 +20,29 @@ export async function buildImages(target) {
     const buildPath = path.dirname(tmpFilePath);
     fs.mkdirSync(buildPath, { recursive: true });
     fs.writeFileSync(tmpFilePath, dockerfile);
-    const buildCommand = `docker build -t mirrorcn/${target.repoName}:${tag} .`;
     await new Promise((resolve) => {
+      const pullCommand = `docker pull ${target.repoName}:${tag}`;
+      logger.info(`Pulling ${target.repoName}:${tag}...`);
+      logger.debug("Pull command:", pullCommand);
+      exec(
+        pullCommand,
+        {
+          windowsHide: true,
+        },
+        (error) => {
+          if (error) {
+            logger.error(
+              `Error when pulling ${target.repoName}:${tag}. Abort.`
+            );
+            logger.error(error.message);
+            process.exit(-1);
+          }
+          resolve();
+        }
+      );
+    });
+    await new Promise((resolve) => {
+      const buildCommand = `docker build -t mirrorcn/${target.repoName}:${tag} .`;
       logger.info(`Building ${target.repoName}:${tag}...`);
       logger.debug("Build command:", buildCommand);
       exec(

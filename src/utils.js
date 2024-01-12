@@ -46,23 +46,3 @@ export function checkDocker() {
     );
   });
 }
-
-// 清空镜像缓存
-export function clearImageCache() {
-  return new Promise((resolve) => {
-    exec(
-      "docker system prune --force",
-      {
-        windowsHide: true,
-      },
-      (error) => {
-        if (error) {
-          logger.error("Error when pruning image cache. Abort.");
-          logger.error(error.message);
-          process.exit(-1);
-        }
-        resolve();
-      }
-    );
-  });
-}
