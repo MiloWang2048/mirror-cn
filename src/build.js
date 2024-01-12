@@ -1,25 +1,12 @@
 import { buildImages } from "./build-images.js";
-import { execSync } from "node:child_process";
-import { readTargets } from "./utils.js";
-import { logger } from "./utils.js";
+import { checkDocker, clearImageCache, readTargets } from "./utils.js";
 
-// 检查 docker 是否安装并良好运行
-try {
-  execSync("docker info", { windowsHide: true, stdio: "ignore" });
-} catch (err) {
-  logger.error("Docker not installed or docker deamon not running. Abort.");
-  process.exit(-1);
+async function build() {
+  await checkDocker();
+  await clearImageCache();
+  for (const target of readTargets()) {
+    await buildImages(target);
+  }
 }
 
-// 清空镜像缓存
-try {
-  execSync("docker system prune -a --force", {
-    windowsHide: true,
-    stdio: "ignore",
-  });
-} catch (err) {
-  logger.error("Error when pruning image cache. Abort.");
-  process.exit(-1);
-}
-
-readTargets().forEach(buildImages);
+build();

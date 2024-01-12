@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { exec } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,8 +11,8 @@ function buildDockerfile(repoName, tag, commands) {
 `;
 }
 
-export function buildImages(target) {
-  target.tags.forEach((tag) => {
+export async function buildImages(target) {
+  for (const tag of target.tags) {
     const dockerfile = buildDockerfile(target.repoName, tag, target.commands);
     const tmpFilePath = fileURLToPath(
       import.meta.resolve("../build/dockerfile")
@@ -20,18 +20,28 @@ export function buildImages(target) {
     const buildPath = path.dirname(tmpFilePath);
     fs.mkdirSync(buildPath, { recursive: true });
     fs.writeFileSync(tmpFilePath, dockerfile);
-    const buildCommand = `docker build -t mirrorcn/${target.repoName}:${tag} -q .`;
-    try {
+    const buildCommand = `docker build -t mirrorcn/${target.repoName}:${tag} .`;
+    await new Promise((resolve) => {
       logger.info(`Building ${target.repoName}:${tag}...`);
-      execSync(buildCommand, {
-        windowsHide: true,
-        cwd: buildPath,
-        stdio: "ignore",
-      });
-      logger.info("Success.");
-    } catch (error) {
-      logger.error(`Error when building ${target.repoName}:${tag}. Abort.`);
-      process.exit(-1);
-    }
-  });
+      logger.debug("Build command:", buildCommand);
+      exec(
+        buildCommand,
+        {
+          windowsHide: true,
+          cwd: buildPath,
+        },
+        (error) => {
+          if (error) {
+            logger.error(
+              `Error when building ${target.repoName}:${tag}. Abort.`
+            );
+            logger.error(error.message);
+            process.exit(-1);
+          }
+          logger.info("Success.");
+          resolve();
+        }
+      );
+    });
+  }
 }

@@ -1,15 +1,31 @@
-import { readTargets } from "./utils.js";
-import { execSync } from "node:child_process";
+import { checkDocker, readTargets } from "./utils.js";
+import { exec } from "node:child_process";
 import { logger } from "./utils.js";
 
-readTargets().forEach((target) => {
-  try {
-    execSync(`docker push -aq mirrorcn/${target.repoName}`, {
-      windowsHide: true,
-      stdio: "ignore",
+async function push() {
+  await checkDocker();
+  for (const target of readTargets()) {
+    const pushCommand = `docker push mirrorcn/${target.repoName}`;
+    logger.info(`Pushing ${target.repoName}...`);
+    logger.debug("Push command:", pushCommand);
+    await new Promise((resolve) => {
+      exec(
+        pushCommand,
+        {
+          windowsHide: true,
+        },
+        (error) => {
+          if (error) {
+            logger.error(`Error when pushing ${target.repoName}. Abort.`);
+            logger.error(error.message);
+            process.exit(-1);
+          }
+          logger.info("Success.");
+          resolve();
+        }
+      );
     });
-  } catch (err) {
-    logger.error(`Error when pushing repo ${repoName}. Abort.`);
-    process.exit(-1);
   }
-});
+}
+
+push();
