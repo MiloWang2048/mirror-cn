@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "build": "node src/build.js",
-    "push": "node src/push.js"
+    "push": "node src/push.js",
+    "update-readme": "node src/write-readme.js",
+    "prepare": "husky"
   },
   "keywords": [],
   "engines": {
@@ -20,5 +22,8 @@
     "joi": "^17.11.0",
     "log4js": "^6.9.1",
     "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11"
   }
 }
