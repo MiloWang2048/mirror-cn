@@ -5,7 +5,7 @@ import { logger } from "./utils.js";
 async function push() {
   await checkDocker();
   for (const target of readTargets()) {
-    const pushCommand = `docker push mirrorcn/${target.repoName}`;
+    const pushCommand = `docker push --all-tags mirrorcn/${target.repoName}`;
     logger.info(`Pushing ${target.repoName}...`);
     logger.debug("Push command:", pushCommand);
     await new Promise((resolve) => {
