@@ -1,5 +1,7 @@
 # mirror-cn
 
+[![Build & push to DockerHub](https://github.com/MiloWang2048/mirror-cn/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/MiloWang2048/mirror-cn/actions/workflows/build-and-push.yml)
+
 Mirror CN 提供一系列已更换为国内镜像源的基础 Docker 镜像，例如 `node`、`ubuntu` 或 `python`。这些镜像的包管理器源已经被替换为国内可用的版本，而其他特性与原镜像保持一致。
 
 ## Todo
